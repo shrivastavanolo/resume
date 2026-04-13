@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --ink: #0e0e0d;
+      --paper: #f5f2ec;
+      --accent: #c84b1e;
+      --accent2: #1a6b4a;
+      --muted: #7a7570;
+      --line: rgba(14, 14, 13, 0.12);
+      --card-bg: #eeeae1;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Syne', sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      cursor: none;
+      overflow-x: hidden;
+    }
+
+    /* Custom cursor */
+    .cursor {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      background: var(--accent);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s, width 0.2s, height 0.2s;
+      mix-blend-mode: multiply;
+    }
+
+    .cursor-ring {
+      position: fixed;
+      width: 36px;
+      height: 36px;
+      border: 1.5px solid var(--accent);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.15s ease, width 0.2s, height 0.2s, opacity 0.2s;
+      opacity: 0.5;
+    }
+
+    body:hover .cursor {
+      opacity: 1;
+    }
+
+    /* Nav */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 3rem;
+      background: var(--paper);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(8px);
+    }
+
+    .nav-logo {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.3rem;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent);
+    }
+
+    /* Hero */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding-top: 72px;
+      overflow: hidden;
+    }
+
+    .hero-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 5rem 3rem 5rem 3rem;
+      position: relative;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      border: 1px solid var(--accent2);
+      padding: 0.35rem 0.8rem;
+      border-radius: 2px;
+      margin-bottom: 2rem;
+      width: fit-content;
+    }
+
+    .hero-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(3.5rem, 6vw, 5.5rem);
+      line-height: 1.0;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.2rem;
+    }
+
+    .hero-name em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero-role {
+      font-size: 0.85rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 1.5rem 0 2.5rem;
+    }
+
+    .hero-desc {
+      font-size: 1.05rem;
+      line-height: 1.75;
+      color: #444;
+      max-width: 420px;
+      margin-bottom: 3rem;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .btn-primary {
+      background: var(--ink);
+      color: var(--paper);
+      padding: 0.8rem 2rem;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.82rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border: none;
+      cursor: none;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.2s;
+      display: inline-block;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .btn-ghost {
+      color: var(--ink);
+      font-size: 0.82rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-bottom: 1.5px solid var(--ink);
+      padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .btn-ghost:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .hero-right {
+      background: var(--card-bg);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 4rem 3rem;
+      border-left: 1px solid var(--line);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-visual {
+      width: 100%;
+      max-width: 360px;
+      position: relative;
+    }
+
+    .big-initial {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(8rem, 20vw, 16rem);
+      line-height: 0.85;
+      color: transparent;
+      -webkit-text-stroke: 1.5px var(--ink);
+      user-select: none;
+      letter-spacing: -0.05em;
+      opacity: 0.12;
+      position: absolute;
+      top: -2rem;
+      left: -1rem;
+      z-index: 0;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--line);
+      border: 1px solid var(--line);
+      position: relative;
+      z-index: 1;
+      margin-top: 8rem;
+      width: 100%;
+      max-width: 360px;
+    }
+
+    .stat-box {
+      background: var(--card-bg);
+      padding: 1.8rem 1.5rem;
+      transition: background 0.2s;
+    }
+
+    .stat-box:hover {
+      background: var(--paper);
+    }
+
+    .stat-num {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2.5rem;
+      line-height: 1;
+      color: var(--ink);
+      letter-spacing: -0.04em;
+    }
+
+    .stat-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      margin-top: 0.4rem;
+    }
+
+    /* Marquee */
+    .marquee-wrap {
+      overflow: hidden;
+      background: var(--ink);
+      color: var(--paper);
+      padding: 0.85rem 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .marquee-track {
+      display: flex;
+      gap: 0;
+      animation: marquee 18s linear infinite;
+      width: max-content;
+    }
+
+    .marquee-item {
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 0 2.5rem;
+      white-space: nowrap;
+      color: rgba(245, 242, 236, 0.7);
+    }
+
+    .marquee-dot {
+      width: 5px;
+      height: 5px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+
+    @keyframes marquee {
+      from {
+        transform: translateX(0);
+      }
+
+      to {
+        transform: translateX(-50%);
+      }
+    }
+
+    /* Section shared */
+    section {
+      padding: 7rem 3rem;
+    }
+
+    .section-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .section-label::before {
+      content: '';
+      display: block;
+      width: 2.5rem;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    .section-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2.5rem, 4vw, 3.5rem);
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 4rem;
+    }
+
+    .section-title em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    /* Experience */
+    .experience {
+      background: var(--paper);
+    }
+
+    .exp-grid {
+      display: grid;
+      grid-template-columns: 2fr 3fr;
+      gap: 5rem;
+    }
+
+    .exp-left .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      border-left: 1px solid var(--line);
+      padding-left: 2rem;
+    }
+
+    .exp-item {
+      cursor: none;
+      padding: 1.5rem 0;
+      border-bottom: 1px solid var(--line);
+      position: relative;
+      transition: all 0.2s;
+    }
+
+    .exp-item::before {
+      content: '';
+      position: absolute;
+      left: -2.45rem;
+      top: 1.8rem;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--card-bg);
+      border: 1.5px solid var(--muted);
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .exp-item.active::before {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .exp-item.active .exp-company {
+      color: var(--accent);
+    }
+
+    .exp-company {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.2rem;
+      transition: color 0.2s;
+    }
+
+    .exp-role {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .exp-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 0.4rem;
+    }
+
+    .exp-detail {
+      display: none;
+    }
+
+    .exp-detail.visible {
+      display: block;
+    }
+
+    .exp-detail-inner {
+      padding: 2rem;
+      background: var(--card-bg);
+      border: 1px solid var(--line);
+      position: sticky;
+      top: 6rem;
+    }
+
+    .exp-detail-company {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    .exp-detail-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.8rem;
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+    }
+
+    .exp-points {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .exp-points li {
+      font-size: 0.88rem;
+      line-height: 1.6;
+      color: #444;
+      padding-left: 1.2rem;
+      position: relative;
+    }
+
+    .exp-points li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-size: 0.75rem;
+    }
+
+    .exp-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 2rem;
+    }
+
+    .tag {
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.7rem;
+      border: 1px solid var(--line);
+      color: var(--muted);
+    }
+
+    /* Projects */
+    .projects {
+      background: var(--card-bg);
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .project-card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      padding: 2.5rem;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: none;
+    }
+
+    .project-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s;
+    }
+
+    .project-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(14, 14, 13, 0.1);
+    }
+
+    .project-card:hover::after {
+      transform: scaleX(1);
+    }
+
+    .project-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .project-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.6rem;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .project-desc {
+      font-size: 0.88rem;
+      line-height: 1.6;
+      color: #555;
+      margin-bottom: 1.5rem;
+    }
+
+    .project-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stack-pill {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      background: var(--card-bg);
+      padding: 0.25rem 0.6rem;
+      border: 1px solid var(--line);
+      color: var(--muted);
+    }
+
+    .project-link {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent2);
+      text-decoration: none;
+      border-bottom: 1px solid var(--accent2);
+      transition: color 0.2s;
+    }
+
+    .project-link:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    /* Skills */
+    .skills {
+      background: var(--paper);
+    }
+
+    .skills-inner {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 5rem;
+      align-items: start;
+    }
+
+    .skills-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .skill-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--line);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .skill-row::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 0%;
+      background: var(--card-bg);
+      transition: width 0.4s ease;
+      z-index: 0;
+    }
+
+    .skill-row:hover::before {
+      width: 100%;
+    }
+
+    .skill-name {
+      font-size: 0.88rem;
+      font-weight: 700;
+      position: relative;
+      z-index: 1;
+    }
+
+    .skill-level {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--accent);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Achievements */
+    .achievements {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    .achievements .section-label {
+      color: #c8905a;
+    }
+
+    .achievements .section-label::before {
+      background: #c8905a;
+    }
+
+    .ach-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: rgba(245, 242, 236, 0.1);
+    }
+
+    .ach-card {
+      padding: 3rem 2.5rem;
+      background: var(--ink);
+      border: 1px solid rgba(245, 242, 236, 0.08);
+      transition: background 0.2s;
+    }
+
+    .ach-card:hover {
+      background: #1a1a18;
+    }
+
+    .ach-icon {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      width: 2.5rem;
+      height: 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(245, 242, 236, 0.15);
+      border-radius: 4px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.9rem;
+      color: #c8905a;
+      letter-spacing: 0.05em;
+    }
+
+    .ach-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.3rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .ach-body {
+      font-size: 0.83rem;
+      line-height: 1.6;
+      color: rgba(245, 242, 236, 0.6);
+    }
+
+    /* Contact */
+    .contact {
+      background: var(--paper);
+    }
+
+    .contact-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+
+    .contact-big {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(3rem, 6vw, 5rem);
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+    }
+
+    .contact-big em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .contact-links {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .contact-link-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 1.5rem;
+      background: var(--card-bg);
+      border: 1px solid var(--line);
+      text-decoration: none;
+      color: var(--ink);
+      transition: background 0.2s, transform 0.2s;
+      cursor: none;
+    }
+
+    .contact-link-row:hover {
+      background: var(--ink);
+      color: var(--paper);
+      transform: translateX(4px);
+    }
+
+    .contact-link-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+    }
+
+    .contact-link-value {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1rem;
+    }
+
+    .contact-link-arrow {
+      font-size: 1.2rem;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--ink);
+      color: rgba(245, 242, 236, 0.4);
+      padding: 2rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    footer span:last-child {
+      color: var(--accent);
+    }
+
+    /* Animations */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    .reveal-delay-1 {
+      transition-delay: 0.1s;
+    }
+
+    .reveal-delay-2 {
+      transition-delay: 0.2s;
+    }
+
+    .reveal-delay-3 {
+      transition-delay: 0.3s;
+    }
+
+    .reveal-delay-4 {
+      transition-delay: 0.4s;
+    }
+
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-right {
+        display: none;
+      }
+
+      .exp-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .projects-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .contact-inner {
+        grid-template-columns: 1fr;
+      }
+
+      .skills-inner {
+        grid-template-columns: 1fr;
+      }
+
+      .ach-grid {
+        grid-template-columns: 1fr;
+      }
+
+      nav {
+        padding: 1rem 1.5rem;
+      }
+
+      section {
+        padding: 5rem 1.5rem;
+      }
+
+      .hero-left {
+        padding: 4rem 1.5rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <nav>
+    <div class="nav-logo">Shreya<em style="font-style:italic;color:var(--accent)">.</em></div>
+    <ul class="nav-links">
+      <li><a href="#experience">Work</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero" id="hero">
+    <div class="hero-left">
+      <div class="hero-tag reveal">Software Engineer & AI/ML Specialist</div>
+      <h1 class="hero-name reveal reveal-delay-1">
+        Shreya<br><em>Shrivastava</em>
+      </h1>
+      <p class="hero-role reveal reveal-delay-2">Full-Stack · WordPress Core · Machine Learning</p>
+      <p class="hero-desc reveal reveal-delay-3">
+        Building production-grade systems at the intersection of web engineering and artificial intelligence. WordPress
+        Core Contributor with 10+ merged PRs. Top 1000 AWS AI/ML Scholar globally.
+      </p>
+      <div class="hero-ctas reveal reveal-delay-4">
+        <a href="#contact" class="btn-primary">Get in touch</a>
+        <a href="#projects" class="btn-ghost">View work</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-visual">
+        <div class="big-initial">SS</div>
+        <div class="stats-grid">
+          <div class="stat-box reveal">
+            <div class="stat-num">10+</div>
+            <div class="stat-label">WP Core PRs merged</div>
+          </div>
+          <div class="stat-box reveal reveal-delay-1">
+            <div class="stat-num">8.6</div>
+            <div class="stat-label">CGPA, USAR Delhi</div>
+          </div>
+          <div class="stat-box reveal reveal-delay-2">
+            <div class="stat-num">2k+</div>
+            <div class="stat-label">Hackathon teams beaten</div>
+          </div>
+          <div class="stat-box reveal reveal-delay-3">
+            <div class="stat-num">sub-2s</div>
+            <div class="stat-label">RAG query response</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Marquee -->
+  <div class="marquee-wrap">
+    <div class="marquee-track" id="marquee">
+      <div class="marquee-item">WordPress Core Contributor <span class="marquee-dot"></span></div>
+      <div class="marquee-item">React &amp; TypeScript <span class="marquee-dot"></span></div>
+      <div class="marquee-item">RAG Systems &amp; LangChain <span class="marquee-dot"></span></div>
+      <div class="marquee-item">AWS AI/ML Scholar '24 <span class="marquee-dot"></span></div>
+      <div class="marquee-item">Hackathon Champion <span class="marquee-dot"></span></div>
+      <div class="marquee-item">Docker &amp; CI/CD <span class="marquee-dot"></span></div>
+      <div class="marquee-item">CrewAI · Gemini · Pinecone <span class="marquee-dot"></span></div>
+      <div class="marquee-item">PHP · Python · JavaScript <span class="marquee-dot"></span></div>
+      <div class="marquee-item">WordPress Core Contributor <span class="marquee-dot"></span></div>
+      <div class="marquee-item">React &amp; TypeScript <span class="marquee-dot"></span></div>
+      <div class="marquee-item">RAG Systems &amp; LangChain <span class="marquee-dot"></span></div>
+      <div class="marquee-item">AWS AI/ML Scholar '24 <span class="marquee-dot"></span></div>
+      <div class="marquee-item">Hackathon Champion <span class="marquee-dot"></span></div>
+      <div class="marquee-item">Docker &amp; CI/CD <span class="marquee-dot"></span></div>
+      <div class="marquee-item">CrewAI · Gemini · Pinecone <span class="marquee-dot"></span></div>
+      <div class="marquee-item">PHP · Python · JavaScript <span class="marquee-dot"></span></div>
+    </div>
+  </div>
+
+  <!-- Experience -->
+  <section class="experience" id="experience">
+    <div class="section-label reveal">Experience</div>
+    <h2 class="section-title reveal reveal-delay-1">Where I've <em>made</em><br>an impact</h2>
+    <div class="exp-grid">
+      <div class="exp-left reveal reveal-delay-2">
+        <div class="timeline">
+          <div class="exp-item active" data-exp="rtcamp" onclick="switchExp(this, 'rtcamp')">
+            <div class="exp-company">rtCamp</div>
+            <div class="exp-role">Software Engineer</div>
+            <div class="exp-date">Jan 2025 – Present · Remote</div>
+          </div>
+          <div class="exp-item" data-exp="pearl" onclick="switchExp(this, 'pearl')">
+            <div class="exp-company">PearlThoughts</div>
+            <div class="exp-role">Machine Learning Trainee</div>
+            <div class="exp-date">Aug – Oct 2023 · Remote</div>
+          </div>
+          <div class="exp-item" data-exp="intel" onclick="switchExp(this, 'intel')">
+            <div class="exp-company">Intel oneAPI Club</div>
+            <div class="exp-role">Team Co-Lead (AI)</div>
+            <div class="exp-date">USAR New Delhi</div>
+          </div>
+        </div>
+      </div>
+      <div class="exp-right">
+        <div class="exp-detail visible" id="exp-rtcamp">
+          <div class="exp-detail-inner reveal reveal-delay-3">
+            <div class="exp-detail-company">rtCamp · 2025 – Present</div>
+            <div class="exp-detail-title">Software Engineer</div>
+            <ul class="exp-points">
+              <li>Full-stack WordPress projects using PHP, ReactJS, and Gutenberg — custom blocks, REST APIs, and
+                performance optimization.</li>
+              <li>Core Contributor to WordPress 6.9 with 10+ merged pull requests across WordPress Core and Gutenberg
+                repositories.</li>
+              <li>Developed frontend for a custom WordPress video transcoding plugin with a Gutenberg video block,
+                dynamic controls, and seamless playback.</li>
+            </ul>
+            <div class="exp-tags">
+              <span class="tag">PHP</span>
+              <span class="tag">ReactJS</span>
+              <span class="tag">Gutenberg</span>
+              <span class="tag">REST API</span>
+              <span class="tag">WordPress Core</span>
+            </div>
+          </div>
+        </div>
+        <div class="exp-detail" id="exp-pearl">
+          <div class="exp-detail-inner">
+            <div class="exp-detail-company">PearlThoughts · Aug – Oct 2023</div>
+            <div class="exp-detail-title">ML Trainee</div>
+            <ul class="exp-points">
+              <li>Initiated a RAG agent system using LangChain and OpenAI for semantic QA with user-uploaded documents.
+              </li>
+              <li>Integrated Pinecone for vector search and Redis for caching; deployed with Streamlit achieving sub-2s
+                average query response time.</li>
+            </ul>
+            <div class="exp-tags">
+              <span class="tag">LangChain</span>
+              <span class="tag">OpenAI</span>
+              <span class="tag">Pinecone</span>
+              <span class="tag">Redis</span>
+              <span class="tag">Streamlit</span>
+            </div>
+          </div>
+        </div>
+        <div class="exp-detail" id="exp-intel">
+          <div class="exp-detail-inner">
+            <div class="exp-detail-company">Intel oneAPI Club · USAR</div>
+            <div class="exp-detail-title">Team Co-Lead, AI</div>
+            <ul class="exp-points">
+              <li>Led a team of 7+ members to organize ML Mania at Azintek'23.</li>
+              <li>Mentored junior developers and drove technical workshops on AI/ML tooling.</li>
+            </ul>
+            <div class="exp-tags">
+              <span class="tag">Leadership</span>
+              <span class="tag">AI/ML</span>
+              <span class="tag">Mentoring</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects -->
+  <section class="projects" id="projects">
+    <div class="section-label reveal">Projects</div>
+    <h2 class="section-title reveal reveal-delay-1">Things I've <em>built</em></h2>
+    <div class="projects-grid">
+      <div class="project-card reveal reveal-delay-1">
+        <div class="project-num">01 / Featured</div>
+        <div class="project-title">CrewMap</div>
+        <div class="project-desc">An agentic AI system using CrewAI to transform LinkedIn job descriptions into
+          structured learning roadmaps — multi-agent orchestration, Serper-powered web search, and Gemini LLMs.</div>
+        <div class="project-stack">
+          <span class="stack-pill">FastAPI</span>
+          <span class="stack-pill">React</span>
+          <span class="stack-pill">TypeScript</span>
+          <span class="stack-pill">CrewAI</span>
+          <span class="stack-pill">Redis</span>
+          <span class="stack-pill">Gemini</span>
+          <span class="stack-pill">Docker</span>
+        </div>
+        <a href="https://crewmap-ecru.vercel.app/" class="project-link">View project →</a>
+      </div>
+      <div class="project-card reveal reveal-delay-2">
+        <div class="project-num">02</div>
+        <div class="project-title">Knowfin+</div>
+        <div class="project-desc">Personalized finance planner using React, Flask, and HuggingFace transformers to
+          analyze spending patterns and suggest budgets. ML model achieved 85% accuracy on labeled datasets.</div>
+        <div class="project-stack">
+          <span class="stack-pill">React.js</span>
+          <span class="stack-pill">Flask</span>
+          <span class="stack-pill">HuggingFace</span>
+          <span class="stack-pill">Python</span>
+        </div>
+        <a href="https://www.youtube.com/watch?v=YLRUZ2_G62I" class="project-link">View demo →</a>
+      </div>
+      <div class="project-card reveal reveal-delay-3">
+        <div class="project-num">03</div>
+        <div class="project-title"> Neural Network for Named Entity Recognition (Bi-directional LSTM)</div>
+        <div class="project-desc">A deep learning-based model for Named entity recognition with 87.2% test accuracy and 87.0 test F1 score.</div>
+        <div class="project-stack">
+          <span class="stack-pill">Python</span>
+          <span class="stack-pill">Deep Learning</span>
+          <span class="stack-pill">Data Cleaning</span>
+          <span class="stack-pill">Natural Language Processing</span>
+        </div>
+        <a href="https://github.com/shrivastavanolo/NER-with-Bi-LSTM/" class="project-link">View code →</a>
+
+      </div>
+      <div class="project-card reveal reveal-delay-4">
+        <div class="project-num">04</div>
+        <div class="project-title">RAG Document Agent</div>
+        <div class="project-desc">Semantic QA system over user-uploaded documents using LangChain, OpenAI, Pinecone
+          vector search, and Redis caching. Sub-2s average response time at scale.</div>
+        <div class="project-stack">
+          <span class="stack-pill">LangChain</span>
+          <span class="stack-pill">OpenAI</span>
+          <span class="stack-pill">Pinecone</span>
+          <span class="stack-pill">Redis</span>
+        </div>
+        <a href="https://github.com/shrivastavanolo/ChatBook" class="project-link">View code →</a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills -->
+  <section class="skills" id="skills">
+    <div class="section-label reveal">Technical Skills</div>
+    <h2 class="section-title reveal reveal-delay-1">My <em>toolkit</em></h2>
+    <div class="skills-inner">
+      <div class="reveal reveal-delay-2">
+        <p style="font-size:0.95rem;line-height:1.8;color:#555;margin-bottom:2rem;">
+          From Gutenberg blocks to LLM pipelines — I build things that work in production. Comfortable at the
+          intersection of web engineering and applied ML.
+        </p>
+        <div style="padding:1.5rem;background:var(--card-bg);border:1px solid var(--line);">
+          <div
+            style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.2em;color:var(--muted);margin-bottom:0.75rem;">
+            Education</div>
+          <div style="font-family:'DM Serif Display',serif;font-size:1.05rem;line-height:1.4;">B.Tech — AI &amp; Machine
+            Learning</div>
+          <div style="font-size:0.82rem;color:var(--muted);margin-top:0.3rem;">USAR, New Delhi · 2021–25 · CGPA 8.6
+          </div>
+        </div>
+      </div>
+      <div class="skills-list reveal reveal-delay-3">
+        <div class="skill-row"><span class="skill-name">Python · JavaScript · TypeScript · PHP · SQL</span><span
+            class="skill-level">Languages</span></div>
+        <div class="skill-row"><span class="skill-name">React.js · Flask · Node.js · WordPress</span><span
+            class="skill-level">Web</span></div>
+        <div class="skill-row"><span class="skill-name">TensorFlow · HuggingFace · RAG · LangChain</span><span
+            class="skill-level">ML / AI</span></div>
+        <div class="skill-row"><span class="skill-name">CrewAI · OpenAI · Gemini · Vector DBs</span><span
+            class="skill-level">Agentic AI</span></div>
+        <div class="skill-row"><span class="skill-name">Redis · MySQL · MongoDB · Pinecone</span><span
+            class="skill-level">Data</span></div>
+        <div class="skill-row"><span class="skill-name">Docker · Git · CI/CD · Tailwind</span><span
+            class="skill-level">Tools</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Achievements -->
+  <section class="achievements" id="achievements">
+    <div class="section-label reveal">Recognition</div>
+    <h2 class="section-title reveal reveal-delay-1" style="color:var(--paper);">Awards &amp; <em
+        style="color:#c8905a;">honours</em></h2>
+    <div class="ach-grid">
+      <div class="ach-card reveal">
+        <div class="ach-icon">01</div>
+        <div class="ach-title">1st Prize — HumanAIze Hackathon</div>
+        <div class="ach-body">Won top position out of 2000+ teams at Hack2Skill. Built an AI-powered healthcare
+          assistant. Nov 2024.</div>
+      </div>
+      <div class="ach-card reveal reveal-delay-1">
+        <div class="ach-icon">02</div>
+        <div class="ach-title">AWS AI/ML Scholar '24</div>
+        <div class="ach-body">Selected among the top 1000 students globally by Amazon Web Services for applied ML
+          training and cloud projects. Aug 2024.</div>
+      </div>
+      <div class="ach-card reveal reveal-delay-2">
+        <div class="ach-icon">03</div>
+        <div class="ach-title">3rd Place + Firebase Genkit Award</div>
+        <div class="ach-body">Cosmocloud Hackathon — outperformed 5300+ teams. Implemented a scalable AI backend using
+          Firebase and Gemini. Feb 2024.</div>
+      </div>
+      <div class="ach-card reveal reveal-delay-3">
+        <div class="ach-icon">04</div>
+        <div class="ach-title">WordPress 6.9 Core Contributor</div>
+        <div class="ach-body">10+ merged pull requests across WordPress Core and Gutenberg repositories. Active open
+          source contributor. 2025.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="contact" id="contact">
+    <div class="section-label reveal">Contact</div>
+    <div class="contact-inner">
+      <div>
+        <h2 class="contact-big reveal reveal-delay-1">Let's<br>work <em>together.</em></h2>
+      </div>
+      <div class="contact-links reveal reveal-delay-2">
+        <a class="contact-link-row" href="mailto:shreya2202shri@gmail.com">
+          <div>
+            <div class="contact-link-label">Email</div>
+            <div class="contact-link-value">shreya2202shri@gmail.com</div>
+          </div>
+          <div class="contact-link-arrow">↗</div>
+        </a>
+        <a class="contact-link-row" href="tel:+919039648675">
+          <div>
+            <div class="contact-link-label">Phone</div>
+            <div class="contact-link-value">+91 90396 48675</div>
+          </div>
+          <div class="contact-link-arrow">↗</div>
+        </a>
+        <a class="contact-link-row" href="https://github.com/shrivastavanolo">
+          <div>
+            <div class="contact-link-label">GitHub</div>
+            <div class="contact-link-value">View repositories →</div>
+          </div>
+          <div class="contact-link-arrow">↗</div>
+        </a>
+        <a class="contact-link-row" href="https://www.linkedin.com/in/shrinolo/">
+          <div>
+            <div class="contact-link-label">LinkedIn</div>
+            <div class="contact-link-value">Connect on LinkedIn →</div>
+          </div>
+          <div class="contact-link-arrow">↗</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Shreya Shrivastava · 2025</span>
+    <span>Software Engineer</span>
+  </footer>
+
+  <script>
+    // Cursor
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cursor.style.left = mx + 'px';
+      cursor.style.top = my + 'px';
+    });
+
+    function animRing() {
+      rx += (mx - rx) * 0.12;
+      ry += (my - ry) * 0.12;
+      ring.style.left = rx + 'px';
+      ring.style.top = ry + 'px';
+      requestAnimationFrame(animRing);
+    }
+    animRing();
+
+    document.querySelectorAll('a, button, .exp-item, .project-card, .contact-link-row').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.style.width = '18px';
+        cursor.style.height = '18px';
+        ring.style.width = '52px';
+        ring.style.height = '52px';
+      });
+      el.addEventListener('mouseleave', () => {
+        cursor.style.width = '10px';
+        cursor.style.height = '10px';
+        ring.style.width = '36px';
+        ring.style.height = '36px';
+      });
+    });
+
+    // Experience tab switching
+    function switchExp(el, id) {
+      document.querySelectorAll('.exp-item').forEach(i => i.classList.remove('active'));
+      document.querySelectorAll('.exp-detail').forEach(d => d.classList.remove('visible'));
+      el.classList.add('active');
+      document.getElementById('exp-' + id).classList.add('visible');
+    }
+
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+    }, { threshold: 0.1 });
+    reveals.forEach(r => obs.observe(r));
+
+    // Marquee clone for seamless loop
+    const track = document.getElementById('marquee');
+    track.innerHTML += track.innerHTML;
+  </script>
+</body>
+
+</html>
